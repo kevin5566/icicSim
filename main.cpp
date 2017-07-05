@@ -1,3 +1,5 @@
+// argv[1]:   input.txt
+
 #include<iostream>
 #include<vector>
 #include<fstream>
@@ -5,6 +7,8 @@
 #include<sstream>
 #include<random>
 #include<math.h>
+#include<iomanip>
+#include<numeric>
 
 #include "Def.h"
 using namespace std;
@@ -54,14 +58,58 @@ void calcavgSINR(vector<baseStation> &BS_list, double &SINR_max, double &SINR_mi
 
 void showUEinfo(vector<baseStation> BS_list){
     for(int i=0;i<BS_list.size();i++){
-        cout<<"BS idx: "<<i<<endl;
-        cout<<"UE idx\tx\ty\t\avgSINR_t"<<endl;
+        cout<<setw(6)<<"BS idx"<<"|"<<setw(8)<<"x"<<"|"<<setw(8)<<"y"<<endl;
+        cout<<setw(6)<<i<<"|"<<setw(8)<<BS_list[i].x<<"|"<<setw(8)<<BS_list[i].y<<endl;
+        cout<<setw(6)<<"UE idx"<<"|"<<setw(8)<<"x"<<"|"<<setw(8)<<"y"<<"|"<<setw(8)<<"avgSINR"<<"|"<<setw(5)<<"Pa"<<"|"<<setw(7)<<"RBnum"<<endl;
         for(int j=0;j<BS_list[i].UE_list.size();j++){
-            cout<<j<<"\t\t"<<BS_list[i].UE_list[j].x<<"\t"
-                <<BS_list[i].UE_list[j].y<<"\t\t"
-                <<BS_list[i].UE_list[j].avgSINR<<"\t"<<endl;
+            cout<<setw(6)<<j<<"|"<<setw(8)<<BS_list[i].UE_list[j].x<<"|"<<setw(8)<<BS_list[i].UE_list[j].y<<"|"<<setw(8)<<BS_list[i].UE_list[j].avgSINR<<"|"<<setw(5)<<BS_list[i].UE_list[j].pa<<"|"<<setw(7)<<accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0)<<endl;
         }
         cout<<endl;
+    }
+}
+
+void showUEallocRB(vector<baseStation> BS_list){
+    cout<<"////////////////////////// UE RB used //////////////////////////"<<endl;
+    for(int i=0;i<BS_list.size();i++){
+        cout<<setw(6)<<"BS idx"<<":"<<setw(3)<<i<<endl;
+        cout<<setw(6)<<"UE idx"<<"|"<<setw(9)<<"RB used"<<"(1: Used, 0: No Use)"<<endl;
+        for(int j=0;j<BS_list[i].UE_list.size();j++){
+            cout<<setw(6)<<j<<"|  ";
+            for(int k=0;k<N_band;k++){
+                cout<<BS_list[i].UE_list[j].subbandMask[k];
+            }
+            cout<<" ("<<setw(2)<<accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0)<<")";
+            cout<<endl;
+        }
+        cout<<endl;
+    }
+}
+
+void showBSinfo(vector<baseStation> BS_list){
+    cout<<"/////////////////////// Base Station Info. //////////////////////"<<endl;
+    for(int i=0;i<BS_list.size();i++){
+        cout<<setw(12)<<"BS idx"<<":"<<setw(3)<<i<<endl;
+        cout<<setw(12)<<"RB_Pa_origin"<<":  ";
+        for(int j=0;j<N_band;j++){
+            cout<<BS_list[i].RB_pa[j];
+        }
+        cout<<endl;
+        cout<<setw(12)<<"RB_Pa_actual"<<":  ";
+        for(int j=0;j<N_band;j++){
+            if(BS_list[i].RB_pa_actual[j]==-1)
+                cout<<"X";
+            else
+                cout<<BS_list[i].RB_pa_actual[j];
+        }
+        cout<<endl;
+        cout<<setw(12)<<"RB_alloc_to_"<<":  ";
+        for(int j=0;j<N_band;j++){
+            if(BS_list[i].sub_alloc[j]==-1)
+                cout<<"X";
+            else
+                cout<<BS_list[i].sub_alloc[j];
+        }
+        cout<<endl<<endl;
     }
 }
 
@@ -83,16 +131,9 @@ void showUEsinr(vector<baseStation> BS_list){
 int main(int argc, char* argv[]){
     vector<baseStation> BS_list;
     
-    // Specify UE number //
-    int UEnum=stoi(argv[1]);
-    if(UEnum>15||UEnum<1){
-        cout<<"[Error] Range of UE number: 1~15"<<endl;
-        return 0;
-    }
-    
     // Read BS Input //
     ifstream infile;
-    infile.open(argv[2],ifstream::in);
+    infile.open(argv[1],ifstream::in);
     
     string tmpline;
     // First line: BSnum //
@@ -119,24 +160,29 @@ int main(int argc, char* argv[]){
     for(int i=0;i<BSnum;i++){
         getline(infile,tmpline);
         for(int j=0;j<tmpline.length();j++){
-            BS_list[i].sub_P[j]=BS_list[i].sub_P[j]+pa_level[tmpline[j]-'0'];
+            //BS_list[i].sub_P[j]=BS_list[i].sub_P[j]+pa_level[tmpline[j]-'0'];
             BS_list[i].RB_pa.push_back(tmpline[j]-'0');
         }
     }
     
     // Read UE Input //
-    for(int i=0;i<UEnum;i++){
+    int UEnum=0;
+    for(int i=0;i<BSnum;i++){
+        // Read each BS's UE num //
         getline(infile,tmpline);
-        stringstream element(tmpline);
-        
-        while(getline(element,field,',')){
-            tmp.push_back(atof(field.c_str()));
+        UEnum=atoi(tmpline.c_str());
+        // Push UE info to UE_list //
+        for(int j=0;j<UEnum;j++){
+            getline(infile,tmpline);
+            stringstream element(tmpline);
+            
+            while(getline(element,field,',')){
+                tmp.push_back(atof(field.c_str()));
+            }
+            
+            BS_list[i].UE_list.push_back(UE(BS_list[i].x+tmp[0],BS_list[i].y+tmp[1],tmp[2],tmp[3]));
+            tmp.clear();
         }
-
-        for(int j=0;j<BS_list.size();j++){
-            BS_list[j].UE_list.push_back(UE(BS_list[j].x+tmp[0],BS_list[j].y+tmp[1],tmp[2],tmp[3]));
-        }
-        tmp.clear();
     }
     // Read Input End //
     
@@ -188,7 +234,13 @@ int main(int argc, char* argv[]){
                     if(BS_list[i].sub_alloc[l]!=-1)
                         continue;
                     nowRB_num_UE_get++;
+                    // Specify BS RB to which UE //
                     BS_list[i].sub_alloc[l]=sched_UE_list[k];
+                    // Modify Power level of BS RB //
+                    BS_list[i].sub_P[l]=BS_list[i].sub_P[l]+pa_level[BS_list[i].UE_list[sched_UE_list[k]].pa];
+                    // Record Actual Pa used of BS RB //
+                    BS_list[i].RB_pa_actual[l]=BS_list[i].UE_list[sched_UE_list[k]].pa;
+                    // Update UE RB used(mask) list //
                     BS_list[i].UE_list[sched_UE_list[k]].subbandMask[l]=1;
                 }
             }
@@ -199,6 +251,8 @@ int main(int argc, char* argv[]){
                 if(BS_list[i].sub_alloc[l]!=-1)
                     continue;
                 BS_list[i].sub_alloc[l]=sched_UE_list[sched_UE_list.size()-1];
+                BS_list[i].sub_P[l]=BS_list[i].sub_P[l]+pa_level[BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].pa];
+                BS_list[i].RB_pa_actual[l]=BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].pa;
                 BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].subbandMask[l]=1;
             }
             
@@ -213,24 +267,16 @@ int main(int argc, char* argv[]){
         }
     }
     
-    // print Schedule result //
-    for(int i=0;i<BSnum;i++){
-        for(int j=0;j<BS_list[i].UE_list.size();j++){
-            for(int k=0;k<N_band;k++){
-                cout<<BS_list[i].UE_list[j].subbandMask[k];
-            }
-            cout<<endl;
-        }
-        cout<<endl;
-    }
-    
+    showUEinfo(BS_list);
+    showUEallocRB(BS_list);
+    showBSinfo(BS_list);
     return 0;
     
     // Calc Sub-band SINR of all UEs //
     double sinr_tmp=0;
     double i_tmp=0;
     for(int i=0;i<BSnum;i++){
-        for(int j=0;j<UEnum;j++){
+        for(int j=0;j<BS_list[i].UE_list.size();j++){
             // i: BS idx
             // j: UE idx
             // k: Subband idx
