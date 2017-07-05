@@ -40,6 +40,7 @@ struct baseStation{
     vector<double> sub_P;
     vector<int> sub_alloc;  //-1: no use
     vector<int> RB_pa;
+    vector<int> RB_pa_actual; //-1: no use
     vector<UE> UE_list;
     baseStation(double a, double b, double c){
         x=a;
@@ -49,6 +50,7 @@ struct baseStation{
         for(int i=0;i<subbandnum;i++){
             sub_P.push_back(power);
             sub_alloc.push_back(-1);
+            RB_pa_actual.push_back(-1);
         }
     }
 };
