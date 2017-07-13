@@ -9,8 +9,8 @@
 * download `input.txt` 
 * `./icicSim input.txt`
 
-## Usage of `input.txt' 
-```=
+## Usage of `input.txt`
+```clike=
 3
 0,0,40
 1500,0,40
@@ -26,4 +26,12 @@
 1
 0,-866,1,7
 ```
-First line specify ~BS number~
+* First line specify **Base Station number** (`BSnum`)
++ The next `BSnum` lines specify **Base Station[i] Info.**: x, y, Power
++ The next `BSnum` lines specify **RB Pa level**
+
+* The next will contain `BSnum` parts, each part contains an integer(`k`) and `k` lines
++ The `i`th part means **UE info. in base station `i`** 
+- The integer `k` specify **number of UEs**
+- The next `k` lines specify **UE info.**: x, y, isEdge, Pa_level
+~ x, y are relative value to its serving BS 
