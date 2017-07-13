@@ -58,7 +58,7 @@ void calcavgSINR(vector<baseStation> &BS_list, double &SINR_max, double &SINR_mi
     }
 }
 
-int SelectCQI(double SNR_UPPERBOUND, double BLER_UPPERBOUND=0.1){
+int selectCQI(double SNR_UPPERBOUND, double BLER_UPPERBOUND=0.1){
     // Outer_layer(i): CQI
     // Inner_layer(j): BLER
     for(int i=CQI_size-1;i>-1;i--){
@@ -70,7 +70,7 @@ int SelectCQI(double SNR_UPPERBOUND, double BLER_UPPERBOUND=0.1){
             }
         }
     }
-    return -1;
+    return 0;
 }
 
 void showUEinfo(vector<baseStation> BS_list){
@@ -78,9 +78,9 @@ void showUEinfo(vector<baseStation> BS_list){
     for(int i=0;i<BS_list.size();i++){
         cout<<setw(6)<<"BS idx"<<"|"<<setw(6)<<"x"<<"|"<<setw(6)<<"y"<<endl;
         cout<<setw(6)<<i<<"|"<<setw(6)<<BS_list[i].x<<"|"<<setw(6)<<BS_list[i].y<<endl;
-        cout<<setw(6)<<"UE idx"<<"|"<<setw(6)<<"x"<<"|"<<setw(6)<<"y"<<"|"<<setw(9)<<"d_to_eNB"<<"|"<<setw(8)<<"avgSINR"<<"|"<<setw(5)<<"CQI"<<"|"<<setw(5)<<"Pa"<<"|"<<setw(6)<<"RBnum"<<"|"<<setw(15)<<"ideal Thrghput"<<endl;
+        cout<<setw(6)<<"UE idx"<<"|"<<setw(6)<<"x"<<"|"<<setw(6)<<"y"<<"|"<<setw(9)<<"d_to_eNB"<<"|"<<setw(10)<<"avgSINR"<<"|"<<setw(4)<<"CQI"<<"|"<<setw(3)<<"Pa"<<"|"<<setw(6)<<"RBnum"<<"|"<<setw(15)<<"ideal Thrghput"<<endl;
         for(int j=0;j<BS_list[i].UE_list.size();j++){
-            cout<<setw(6)<<j<<"|"<<setw(6)<<BS_list[i].UE_list[j].x<<"|"<<setw(6)<<BS_list[i].UE_list[j].y<<"|"<<setw(9)<<sqrt(pow(BS_list[i].UE_list[j].x-BS_list[i].x,2.0)+pow(BS_list[i].UE_list[j].y-BS_list[i].y,2.0))<<"|"<<setw(8)<<BS_list[i].UE_list[j].avgSINR<<"|"<<setw(5)<<BS_list[i].UE_list[j].CQI<<"|"<<setw(5)<<BS_list[i].UE_list[j].pa<<"|"<<setw(6)<<accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0)<<"|"<<setw(15)<<accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0)*CQI_eff[BS_list[i].UE_list[j].CQI]*BW/N_band/1000000<<endl;
+            cout<<setw(6)<<j<<"|"<<setw(6)<<BS_list[i].UE_list[j].x<<"|"<<setw(6)<<BS_list[i].UE_list[j].y<<"|"<<setw(9)<<sqrt(pow(BS_list[i].UE_list[j].x-BS_list[i].x,2.0)+pow(BS_list[i].UE_list[j].y-BS_list[i].y,2.0))<<"|"<<setw(10)<<BS_list[i].UE_list[j].avgSINR<<"|"<<setw(4)<<BS_list[i].UE_list[j].CQI<<"|"<<setw(3)<<BS_list[i].UE_list[j].pa<<"|"<<setw(6)<<accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0)<<"|"<<setw(15)<<accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0)*CQI_eff[BS_list[i].UE_list[j].CQI]*BW/N_band/1000000<<endl;
         }
         cout<<endl;
     }
@@ -337,7 +337,7 @@ int main(int argc, char* argv[]){
     // Select UE CQI by SINR //
     for(int i=0;i<BSnum;i++)
         for(int j=0;j<BS_list[i].UE_list.size();j++)
-            BS_list[i].UE_list[j].CQI=SelectCQI(BS_list[i].UE_list[j].avgSINR);
+            BS_list[i].UE_list[j].CQI=selectCQI(BS_list[i].UE_list[j].avgSINR);
     
     //showUEsinr(BS_list);
     showUEinfo(BS_list);
