@@ -1,16 +1,16 @@
 # icicSim: gemtek testbed ICIC simulation
-@ Kevin Cheng a.k.a kevin5566, NTUEE 2017
+@ Kevin Cheng a.k.a. kevin5566, NTUEE WMNLab 2017
 
 ## Compile
-* download `main.cpp` and `Def.h`
+* Download `main.cpp` and `Def.h`
 * `g++ main.cpp -o icicSim`
 
 ## Execute
-* download `input.txt` 
+* Download sample input `input.txt` 
 * `./icicSim input.txt`
 
 ## Usage of `input.txt`
-```clike=
+```
 3
 0,0,40
 1500,0,40
@@ -28,10 +28,10 @@
 ```
 * First line specify **Base Station number** (`BSnum`)
   + The next `BSnum` lines specify **Base Station `i` Info.**: x, y, Power
-  + The next `BSnum` lines specify **RB Pa level**
+  + The next `BSnum` lines specify **RB Pa Level**
 
 * The next will contain `BSnum` parts, each part contains an integer(`k`) and `k` lines
 
-* The `i`th part means **UE info.** in base station `i` 
-  - The integer `k` specify **number of UEs**
-  - The next `k` lines specify **UE info.**: x, y, isEdge, Pa_level(x, y are relative value to its serving BS)
+* The `i`th part specify all **UE info.** in base station `i` 
+  - The integer `k` specify **number of UEs** in base station `i`
+  - The next `k` lines specify **UE `j` info.**: x, y, isEdge, Pa_level(x, y are **relative** value to its serving BS)
