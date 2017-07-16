@@ -65,7 +65,7 @@ int selectCQI(double SNR_UPPERBOUND, double BLER_UPPERBOUND=0.1){
         for(int j=level_size-1;j>-1;j--){
             if(BLER_CQI[j][i]<=BLER_UPPERBOUND){
                 if(SNR_CQI[j][i]<=SNR_UPPERBOUND){
-                    return i+1;
+                    return i+1;       // CQI = idx+1 !!
                 }
             }
         }
@@ -299,7 +299,7 @@ int main(int argc, char* argv[]){
     // Calc Sub-band SINR of all UEs //
     double sinr_tmp=0;
     double i_tmp=0;
-    double strg_weight_RS=0.5;
+    double strg_weight_RS=2.0/7.0;
     for(int i=0;i<BSnum;i++){
         for(int j=0;j<BS_list[i].UE_list.size();j++){
             // i: BS idx
@@ -307,6 +307,8 @@ int main(int argc, char* argv[]){
             // k: Subband idx
             // l: target BS idx
             for(int k=0;k<N_band;k++){
+                if(BS_list[i].UE_list[j].subbandMask[k]==0)
+                    continue;
                 i_tmp=pow(10,N_0*(BW/N_band)/10);   //noise
                 for(int l=0;l<BSnum;l++){
                     if(l==i)
