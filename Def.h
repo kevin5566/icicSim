@@ -12,7 +12,7 @@ int     N_band=50;          // Subband num
 double  pa_level[8]={-6,-4.77,-3,-1.77,0,1,2,3};
 
 const int level_size=106;
-const int CQI_size=15;      // return CQI = index+1 !!!!!!!!!
+const int CQI_size=15;
 
 struct UE{
     double x;
@@ -21,6 +21,8 @@ struct UE{
     double avgSINR;
     int    CQI;
     int    pa;
+    // TODO // //double RSSI;
+    // TODO // //double RSRP;
     vector<double> subbandSINR;
     vector<bool> subbandMask;   //0: no use; 1: used
     UE(double a, double b, bool c, int d){
