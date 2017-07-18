@@ -2,7 +2,8 @@
 using namespace std;
 
 double  c=299792458;        // Light Speed
-double  carrierFreq=1.9*1000000000;    // (Hz)
+double  carrierFreq=2.66*1000000000;    // (Hz)
+//double  carrierFreq=1.9*1000000000;   // simulation
 double  d_0=100.0;          // ref. Distance(m)
 int     n=4;                // Path Loss Exponent
 double  N_0=-174.0;         // Noise Density(dBm/Hz)
@@ -14,10 +15,16 @@ double  pa_level[8]={-6,-4.77,-3,-1.77,0,1,2,3};
 const int level_size=106;
 const int CQI_size=15;
 
+typedef enum{
+    CENTER=0,
+    MIDDLE=1,
+    EDGE=2,
+} Position;
+
 struct UE{
     double x;
     double y;
-    bool   isEdge;
+    Position UePosition;
     double avgSINR;
     int    CQI;
     int    pa;
@@ -25,10 +32,10 @@ struct UE{
     // TODO // //double RSRP;
     vector<double> subbandSINR;
     vector<bool> subbandMask;   //0: no use; 1: used
-    UE(double a, double b, bool c, int d){
+    UE(double a, double b, Position c, int d){
         x=a;
         y=b;
-        isEdge=c;
+        UePosition=c;
         pa=d;
         avgSINR=1;
         for(int i=0;i<N_band;i++){

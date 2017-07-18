@@ -187,6 +187,7 @@ int main(int argc, char* argv[]){
     
     // Read UE Input //
     int UEnum=0;
+    Position pType;
     for(int i=0;i<BSnum;i++){
         // Read each BS's UE num //
         getline(infile,tmpline);
@@ -200,7 +201,23 @@ int main(int argc, char* argv[]){
                 tmp.push_back(atof(field.c_str()));
             }
             
-            BS_list[i].UE_list.push_back(UE(BS_list[i].x+tmp[0],BS_list[i].y+tmp[1],tmp[2],tmp[3]));
+            switch((int)tmp[2]) {
+                case 0:
+                    pType=CENTER;
+                    break;
+                case 1:
+                    pType=MIDDLE;
+                    break;
+                case 2:
+                    pType=EDGE;
+                    break;
+                default:
+                    cout<<"[ERROR] Position of UE invaild"<<endl;
+                    return 0;
+                    break;
+            }
+            
+            BS_list[i].UE_list.push_back(UE(BS_list[i].x+tmp[0],BS_list[i].y+tmp[1],pType,tmp[3]));
             tmp.clear();
         }
     }
@@ -299,7 +316,7 @@ int main(int argc, char* argv[]){
     // Calc Sub-band SINR of all UEs //
     double sinr_tmp=0;
     double i_tmp=0;
-    double strg_weight_RS=2.0/7.0;
+    double strg_weight_RS=2.5/7.0;
     for(int i=0;i<BSnum;i++){
         for(int j=0;j<BS_list[i].UE_list.size();j++){
             // i: BS idx
