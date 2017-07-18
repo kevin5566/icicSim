@@ -34,7 +34,11 @@
 
 * The `i`th part specify all **UE info.** in base station `i` 
   - The integer `k` specify **number of UEs** in base station `i`
-  - The next `k` lines specify **UE `j` info.**: x, y, isEdge, Pa_level(x, y are **relative** value to its serving BS)
+  - The next `k` lines specify **UE `j` info.**: x, y, UePosition, Pa_level
+    - x, y are **relative** value to its serving BS
+    - UePosition=0, Cell-Center UE
+    - UePosition=1, Cell-Middle UE
+    - UePosition=2, Cell-Edge UE
 
 # Sample Output 
 ![output](http://i.imgur.com/sUjXxq6.png)
