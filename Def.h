@@ -1,16 +1,16 @@
 #include<vector>
 using namespace std;
 
-double  c=299792458;        // Light Speed
-double  carrierFreq=2.66*1000000000;    // (Hz)
-//double  carrierFreq=1.9*1000000000;   // simulation
-double  d_0=100.0;          // ref. Distance(m)
-int     n=4;                // Path Loss Exponent
-double  N_0=-174.0;         // Noise Density(dBm/Hz)
-double  BW=10*1000000;      // Total BW(Hz)
-int     N_band=50;          // Subband num
+const double  c=299792458;        // Light Speed
+const double  carrierFreq=2.66*1000000000;    // (Hz)
+//const double  carrierFreq=1.9*1000000000;   // simulation
+const double  d_0=100.0;          // ref. Distance(m)
+const int     n=4;                // Path Loss Exponent
+const double  N_0=-174.0;         // Noise Density(dBm/Hz)
+const double  BW=10*1000000;      // Total BW(Hz)
+const int     N_band=50;          // Subband num
 
-double  pa_level[8]={-6,-4.77,-3,-1.77,0,1,2,3};
+const double  pa_level[8]={-6,-4.77,-3,-1.77,0,1,2,3};
 
 const int level_size=106;
 const int CQI_size=15;
@@ -68,7 +68,7 @@ struct baseStation{
     }
 };
 
-double  SNR_CQI[level_size][CQI_size]={
+const double  SNR_CQI[level_size][CQI_size]={
     { -14.5,-12.5,-10.5,-8.5,-6.5,-4.5,-4.5,-0.5,1.5,3.5,5.5,7,8.5,10.25,12 },
     { -14.4,-12.4,-10.4,-8.4,-6.4,-4.4,-4.4,-0.4,1.6,3.6,5.6,7.1,8.6,10.35,12.1 },
     { -14.3,-12.3,-10.3,-8.3,-6.3,-4.3,-4.3,-0.3,1.7,3.7,5.7,7.2,8.7,10.45,12.2 },
@@ -176,7 +176,8 @@ double  SNR_CQI[level_size][CQI_size]={
     { -4.1,-2.1,-0.1,1.9,3.9,5.9,5.9,9.9,11.9,13.9,15.9,17.4,18.9,20.65,22.4 },
     { -4,-2,0,2,4,6,6,10,12,14,16,17.5,19,20.75,22.5 }
 };
-double  BLER_CQI[level_size][CQI_size]={
+
+const double  BLER_CQI[level_size][CQI_size]={
     { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
     { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
     { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
@@ -285,5 +286,5 @@ double  BLER_CQI[level_size][CQI_size]={
     { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 };
 
-double CQI_eff[16]={0, 0.1523, 0.2344, 0.3770, 0.6016, 0.8770, 1.1758, 1.4766, 1.9141, 2.4063, 2.7305, 3.3223, 3.9023, 4.5234,5.1152, 5.5547};
+const double CQI_eff[16]={0, 0.1523, 0.2344, 0.3770, 0.6016, 0.8770, 1.1758, 1.4766, 1.9141, 2.4063, 2.7305, 3.3223, 3.9023, 4.5234,5.1152, 5.5547};
 // table is follow the Table 7.2.3-1 of TS 36.213 v12.3.0
