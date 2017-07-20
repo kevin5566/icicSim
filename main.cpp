@@ -231,6 +231,7 @@ int main(int argc, char* argv[]){
     int UE_pa_num[8]={0,0,0,0,0,0,0,0};
     int RB_pa_num[8]={0,0,0,0,0,0,0,0};
     int RB_num=0;
+    int RB_alloced_num=0;
     int maxRB_num_UE_get=0;
     int nowRB_num_UE_get=0;
     vector<int> sched_UE_list;
@@ -254,11 +255,11 @@ int main(int argc, char* argv[]){
                 continue;
             
             // calc the max num of RB that a UE can get //
+            RB_alloced_num=0;
             for(int k=j;k<8;k++){
                 RB_num=RB_num+RB_pa_num[k];
                 RB_pa_num[k]=0;
             }
-            maxRB_num_UE_get=RB_num/UE_pa_num[j];
             
             // fill now schedule list //
             for(int k=0;k<BS_list[i].UE_list.size();k++){
@@ -267,8 +268,10 @@ int main(int argc, char* argv[]){
             }
             // alloc RB //
             for(int k=0;k<sched_UE_list.size()-1;k++){
-                for(int l=0;l<N_band;l++){
-                    if(nowRB_num_UE_get==maxRB_num_UE_get){
+                maxRB_num_UE_get=(RB_num-RB_alloced_num)/(UE_pa_num[j]-k);
+                for(int l=0;l<N_band;l=l+3){
+                    if(nowRB_num_UE_get>=maxRB_num_UE_get){
+                        RB_alloced_num=RB_alloced_num+nowRB_num_UE_get;
                         nowRB_num_UE_get=0;
                         break;
                     }
@@ -276,28 +279,48 @@ int main(int argc, char* argv[]){
                         continue;
                     if(BS_list[i].sub_alloc[l]!=-1)
                         continue;
-                    nowRB_num_UE_get++;
+                    nowRB_num_UE_get=nowRB_num_UE_get+3;
                     // Specify BS RB alloc to which UE //
                     BS_list[i].sub_alloc[l]=sched_UE_list[k];
+                    BS_list[i].sub_alloc[l+1]=sched_UE_list[k];
                     // Modify Power level of BS RB //
                     BS_list[i].sub_P[l]=BS_list[i].sub_P[l]+pa_level[BS_list[i].UE_list[sched_UE_list[k]].pa];
+                    BS_list[i].sub_P[l+1]=BS_list[i].sub_P[l+1]+pa_level[BS_list[i].UE_list[sched_UE_list[k]].pa];
                     // Record Actual Pa used of BS RB //
                     BS_list[i].RB_pa_actual[l]=BS_list[i].UE_list[sched_UE_list[k]].pa;
+                    BS_list[i].RB_pa_actual[l+1]=BS_list[i].UE_list[sched_UE_list[k]].pa;
                     // Update UE RB used(mask) list //
                     BS_list[i].UE_list[sched_UE_list[k]].subbandMask[l]=1;
+                    BS_list[i].UE_list[sched_UE_list[k]].subbandMask[l+1]=1;
+                    if(l+2==50)
+                        break;
+                    BS_list[i].sub_alloc[l+2]=sched_UE_list[k];
+                    BS_list[i].sub_P[l+2]=BS_list[i].sub_P[l+2]+pa_level[BS_list[i].UE_list[sched_UE_list[k]].pa];
+                    BS_list[i].RB_pa_actual[l+2]=BS_list[i].UE_list[sched_UE_list[k]].pa;
+                    BS_list[i].UE_list[sched_UE_list[k]].subbandMask[l+2]=1;
                 }
             }
-            // last one UE get bonus RB  //
+            // last one UE get all remains RB  //
             // do similar thing in above //
-            for(int l=0;l<N_band;l++){
+            for(int l=0;l<N_band;l=l+3){
                 if(BS_list[i].RB_pa[l]<j)
                     continue;
                 if(BS_list[i].sub_alloc[l]!=-1)
                     continue;
                 BS_list[i].sub_alloc[l]=sched_UE_list[sched_UE_list.size()-1];
+                BS_list[i].sub_alloc[l+1]=sched_UE_list[sched_UE_list.size()-1];
                 BS_list[i].sub_P[l]=BS_list[i].sub_P[l]+pa_level[BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].pa];
+                BS_list[i].sub_P[l+1]=BS_list[i].sub_P[l+1]+pa_level[BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].pa];
                 BS_list[i].RB_pa_actual[l]=BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].pa;
+                BS_list[i].RB_pa_actual[l+1]=BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].pa;
                 BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].subbandMask[l]=1;
+                BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].subbandMask[l+1]=1;
+                if(l+2==50)
+                    break;
+                BS_list[i].sub_alloc[l+2]=sched_UE_list[sched_UE_list.size()-1];
+                BS_list[i].sub_P[l+2]=BS_list[i].sub_P[l+2]+pa_level[BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].pa];
+                BS_list[i].RB_pa_actual[l+2]=BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].pa;
+                BS_list[i].UE_list[sched_UE_list[sched_UE_list.size()-1]].subbandMask[l+2]=1;
             }
             
             RB_num=0;
