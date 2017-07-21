@@ -1,9 +1,16 @@
 # icicSim: gemtek testbed ICIC simulation
 @ Kevin Cheng a.k.a. kevin5566, NTUEE WMNLab 2017
 
+## File Description
+1. `main.cpp`: Main program to call all simulation procedure.
+1. `Def.h`: Define all parameters and function.
+1. `Def.cpp`: Implement of all function.
+1. `makefile`: Compile.
+1. `input.txt`: Sample input.
+
 ## Compile
 * Download ALL files include `main.cpp`, `Def.h`, `Def.cpp`, `makefile`, `input.txt`
-* `make clean` for remove previous compile result
+* `make clean` to remove previous compile result
 * `make` to generate executable file: `icicSim`
 
 ## Execute
@@ -12,20 +19,18 @@
 
 ## Usage of `input.txt`
 ```
-3
-0,0,40
-1500,0,40
-750,1299,40
-77777777777777700000000000000077777777777777700000
-77777777777777777777777777777700000000000000000000
-00000000000000077777777777777777777777777777700000
-1
-70,43,1,7
 2
--750,433,1,7
-750,433,1,7
+0,0,-20
+6,0,-20
+77777777777777777777777777777744411111111111111144
+00000000000000000000000000000000011111111111111100
+4
+2.8,0,2,7
+2.4,0,2,7
+0.9,0,1,4
+2.2,0,2,7
 1
-0,-866,1,7
+-0.3,0,0,1
 ```
 * First line specify **Base Station number** (`BSnum`)
   + The next `BSnum` lines specify **Base Station `i` Info.**: x, y, Power
@@ -42,4 +47,4 @@
     - UePosition=2, Cell-Edge UE
 
 # Sample Output 
-![output](http://i.imgur.com/sUjXxq6.png)
+![output](https://i.imgur.com/6quv6Bm.png)
