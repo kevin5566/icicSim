@@ -1,9 +1,22 @@
 #include<vector>
+#include<iostream>
+#include<fstream>
+#include<string>
+#include<sstream>
+#include<random>
+#include<math.h>
+#include<iomanip>
+#include<numeric>
 using namespace std;
 
+// Shadow Effect //
+//default_random_engine seed1;
+//lognormal_distribution<double> shadow_lognormal(0.0,3.16);
+//normal_distribution<double> shadow_normal(0.0,3.16);
+
+// Parameter //
 const double  c=299792458;        // Light Speed
-const double  carrierFreq=2.66*1000000000;    // (Hz)
-//const double  carrierFreq=1.9*1000000000;   // simulation
+const double  carrierFreq=2.66*1000000000;    // (Hz) 1.9*1000000000
 const double  d_0=100.0;          // ref. Distance(m)
 const int     n=4;                // Path Loss Exponent
 const double  N_0=-174.0;         // Noise Density(dBm/Hz)
@@ -288,3 +301,18 @@ const double  BLER_CQI[level_size][CQI_size]={
 
 const double CQI_eff[16]={0, 0.1523, 0.2344, 0.3770, 0.6016, 0.8770, 1.1758, 1.4766, 1.9141, 2.4063, 2.7305, 3.3223, 3.9023, 4.5234,5.1152, 5.5547};
 // table is follow the Table 7.2.3-1 of TS 36.213 v12.3.0
+
+// Function //
+
+// Return strg value (i.e. Power-PathLoss, unit: dBm) //
+double getStrg(vector<baseStation> BS_list, int i, int j, int k, int l);
+
+bool readInput(char* ptr, vector<baseStation> &BS_list);
+void RBalloc(vector<baseStation> &BS_list);
+void calcsubSINR(vector<baseStation> &BS_list);
+void calcavgSINR(vector<baseStation> &BS_list, double &SINR_max, double &SINR_min);
+int selectCQI(double SNR_UPPERBOUND, double BLER_UPPERBOUND=0.1);
+void showUEinfo(vector<baseStation> BS_list);
+void showUEallocRB(vector<baseStation> BS_list);
+void showBSinfo(vector<baseStation> BS_list);
+void showUEsinr(vector<baseStation> BS_list);
