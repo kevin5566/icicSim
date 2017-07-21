@@ -2,8 +2,9 @@
 @ Kevin Cheng a.k.a. kevin5566, NTUEE WMNLab 2017
 
 ## Compile
-* Download `main.cpp` and `Def.h`
-* `g++ main.cpp -o icicSim`
+* Download ALL files include `main.cpp`, `Def.h`, `Def.cpp`, `makefile`, `input.txt`
+* `make clean` for remove previous compile result
+* `make` to generate executable file: `icicSim`
 
 ## Execute
 * Download sample input `input.txt` 
