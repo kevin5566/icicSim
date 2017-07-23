@@ -28,6 +28,8 @@ const double  pa_level[8]={-6,-4.77,-3,-1.77,0,1,2,3};
 const int level_size=106;
 const int CQI_size=15;
 
+const int total_RBG_num = 16;
+
 typedef enum{
     CENTER=0,
     MIDDLE=1,
@@ -308,6 +310,9 @@ const double CQI_eff[16]={0, 0.1523, 0.2344, 0.3770, 0.6016, 0.8770, 1.1758, 1.4
 double getStrg(vector<baseStation> BS_list, int i, int j, int k, int l);
 
 bool readInput(char* ptr, vector<baseStation> &BS_list);
+bool readInputOpt(char* ptr, vector<baseStation> &BS_list);
+void cmdGenerate(vector<baseStation> BS_list, vector< vector<string> > &command);
+void cmdComboGen(vector< vector<string> > command, vector<vector<int> > &cmdIdx);
 void RBalloc(vector<baseStation> &BS_list);
 void calcsubSINR(vector<baseStation> &BS_list);
 void calcavgSINR(vector<baseStation> &BS_list, double &SINR_max, double &SINR_min);

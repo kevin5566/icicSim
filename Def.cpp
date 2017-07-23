@@ -94,6 +94,165 @@ bool readInput(char* ptr, vector<baseStation> &BS_list){
     return true;
 }
 
+bool readInputOpt(char* ptr, vector<baseStation> &BS_list){
+    // Read BS Input //
+    ifstream infile;
+    infile.open(ptr,ifstream::in);
+    
+    string tmpline;
+    // First line: BSnum //
+    getline(infile,tmpline);
+    int BSnum=atoi(tmpline.c_str());
+    
+    // Next BSnum lines: BS info. //
+    vector<double> tmp;
+    string field;
+    
+    for(int i=0;i<BSnum;i++){
+        getline(infile,tmpline);
+        stringstream element(tmpline);
+        
+        while(getline(element,field,',')){
+            tmp.push_back(atof(field.c_str()));
+        }
+        
+        BS_list.push_back(baseStation(tmp[0],tmp[1],tmp[2]));
+        tmp.clear();
+    }
+    
+    // Read UE Input //
+    int UEnum=0;
+    Position pType;
+    for(int i=0;i<BSnum;i++){
+        // Read each BS's UE num //
+        getline(infile,tmpline);
+        UEnum=atoi(tmpline.c_str());
+        // Push UE info to UE_list //
+        for(int j=0;j<UEnum;j++){
+            getline(infile,tmpline);
+            stringstream element(tmpline);
+            
+            while(getline(element,field,',')){
+                tmp.push_back(atof(field.c_str()));
+            }
+            
+            switch((int)tmp[2]) {
+                case 0:
+                    pType=CENTER;
+                    break;
+                case 1:
+                    pType=MIDDLE;
+                    break;
+                case 2:
+                    pType=EDGE;
+                    break;
+                default:
+                    cout<<"[ERROR] Position of UE invaild"<<endl;
+                    return false;
+                    break;
+            }
+            
+            BS_list[i].UE_list.push_back(UE(BS_list[i].x+tmp[0],BS_list[i].y+tmp[1],pType,tmp[3]));
+            tmp.clear();
+        }
+    }
+    return true;
+}
+
+void cmdGenerate(vector<baseStation> BS_list, vector< vector<string> > &command) {
+    int BSnum = BS_list.size();
+    
+    for (int i = 0; i < BSnum; i++) {
+        vector<string> BS_all_cmd;
+        int UEnum = BS_list[i].UE_list.size();
+        int centerUEnum = 0;
+        int middleUEnum = 0;
+        int edgeUEnum = 0;
+        
+        for (int j = 0; j < UEnum; j++) {
+            int UEposition = BS_list[i].UE_list[j].UePosition;
+            if (UEposition == 0)
+                centerUEnum++;
+            else if (UEposition == 1)
+                middleUEnum++;
+            else if (UEposition == 2)
+                edgeUEnum++;
+        }
+        
+        int avgRBGnum = total_RBG_num / UEnum;
+        int initCenterRBGnum = avgRBGnum * centerUEnum;
+        int initMiddleRBGnum = avgRBGnum * middleUEnum;
+        int initEdgeRBGnum = avgRBGnum * edgeUEnum;
+        int centerRBGnum;
+        int middleRBGnum;
+        int edgeRBGnum;
+        
+        while (1) {
+            if (initCenterRBGnum + initMiddleRBGnum + initEdgeRBGnum < total_RBG_num)
+                initCenterRBGnum++;
+            else
+                break;
+        }
+        
+        for (int m = 0; m >= 0; m++) {
+            string BScmd;
+            centerRBGnum = initCenterRBGnum + m;
+            middleRBGnum = 0;  // ...
+            edgeRBGnum = (total_RBG_num - centerRBGnum - middleRBGnum);
+            
+            if (edgeRBGnum < edgeUEnum)
+                break;
+            
+            // for the first eNB
+            if (i == 0) {
+                for (int k = 0; k < centerRBGnum; k++)
+                    BScmd.append("000");
+                for (int k = 0; k < middleRBGnum; k++)
+                    BScmd.append("444");
+                for (int k = 0; k < edgeRBGnum; k++)
+                    BScmd.append("777");
+                BScmd.append("00");
+            }
+            // for the second eNB
+            else if (i == 1) {
+                for (int k = 0; k < edgeRBGnum; k++)
+                    BScmd.append("777");
+                for (int k = 0; k < middleRBGnum; k++)
+                    BScmd.append("444");
+                for (int k = 0; k < centerRBGnum; k++)
+                    BScmd.append("000");
+                BScmd.append("00");
+            }
+            
+            BS_all_cmd.push_back(BScmd);
+        }
+        
+        command.push_back(BS_all_cmd);
+    }
+}
+
+void cmdComboGen(vector< vector<string> > command, vector<vector<int> > &cmdIdx){
+    
+    vector<int> carryout;
+    carryout.push_back(command[command.size()-1].size());
+    for(int i=0;i<command.size()-2;i++)
+        carryout.push_back(carryout[i]*command[command.size()-2-i].size());
+    reverse(carryout.begin(),carryout.end());
+    
+    int Combonum=1;
+    for(int i=0;i<command.size();i++){
+        Combonum=Combonum*command[i].size();
+        vector<int> tmpidx;
+        cmdIdx.push_back(tmpidx);
+    }
+    
+    for(int i=0;i<Combonum;i++){
+        for(int j=0;j<carryout.size();j++)
+            cmdIdx[j].push_back((i/carryout[j])%command[j].size());
+        cmdIdx[cmdIdx.size()-1].push_back(i%carryout[carryout.size()-1]);
+    }
+}
+
 void RBalloc(vector<baseStation> &BS_list){
     int UE_pa_num[8]={0,0,0,0,0,0,0,0};
     int RB_pa_num[8]={0,0,0,0,0,0,0,0};
