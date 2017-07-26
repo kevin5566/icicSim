@@ -9,6 +9,9 @@ int main(int argc, char* argv[]){
     if(readInput(argv[1],BS_list)==false)
         return 0;
     
+    // Calc RSRP //
+    calcRSRP(BS_list);
+    
     // Schedule //
     RBalloc(BS_list);
     
