@@ -16,9 +16,7 @@ int main(int argc, char* argv[]){
     calcsubSINR(BS_list);
     
     // Calc avg. SINR //
-    double SINR_max=0;
-    double SINR_min=1000;
-    calcavgSINR(BS_list,SINR_max,SINR_min);
+    calcavgSINR(BS_list);
     
     // Select UE CQI by SINR //
     for(int i=0;i<BS_list.size();i++)
