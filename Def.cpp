@@ -459,6 +459,7 @@ int selectMCS(double SNR){
 
 void showUEinfo(vector<baseStation> BS_list){
     vector<string> p_type;
+    int RBnum=0;
     p_type.push_back("Center");
     p_type.push_back("Middle");
     p_type.push_back("Edge");
@@ -480,6 +481,7 @@ void showUEinfo(vector<baseStation> BS_list){
             <<setw(13)<<"CQI Thrghput"<<"|"
             <<setw(13)<<"MCS Thrghput"<<endl;
         for(int j=0;j<BS_list[i].UE_list.size();j++){
+            RBnum=accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0);
             cout<<setw(6)<<j<<"|"
                 <<setw(6)<<BS_list[i].UE_list[j].x<<"|"
                 <<setw(6)<<BS_list[i].UE_list[j].y<<"|"
@@ -490,9 +492,9 @@ void showUEinfo(vector<baseStation> BS_list){
                 <<setw(4)<<BS_list[i].UE_list[j].CQI<<"|"
                 <<setw(4)<<BS_list[i].UE_list[j].MCS<<"|"
                 <<setw(3)<<BS_list[i].UE_list[j].pa<<"|"
-                <<setw(6)<<accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0)<<"|"
-                <<setw(13)<<accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0)*CQI_eff[BS_list[i].UE_list[j].CQI]*BW/N_band/1000000<<"|"
-                <<setw(13)<<accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0)*MCS_TBS_50mimo[BS_list[i].UE_list[j].MCS]/N_band/1000<<endl;
+                <<setw(6)<<RBnum<<"|"
+                <<setw(13)<<RBnum*CQI_eff[BS_list[i].UE_list[j].CQI]*BW/N_band/1000000<<"|"
+                <<setw(13)<<RBnum*MCS_TBS_50mimo[BS_list[i].UE_list[j].MCS]/N_band/1000<<endl;
         }
         cout<<endl;
     }
@@ -579,4 +581,17 @@ void initBSlist(vector<baseStation> &BS_list){
             }
         }
     }
+}
+
+void saveUEinfo(vector<baseStation> BS_list, vector< vector<UEinfo> > &DATA){
+    vector<UEinfo> tmp;
+    int RBnum=0;
+    for(int i=0;i<BS_list.size();i++){
+        for(int j=0;j<BS_list[i].UE_list.size();j++){
+            RBnum=accumulate(BS_list[i].UE_list[j].subbandMask.begin(),BS_list[i].UE_list[j].subbandMask.end(),0);
+            tmp.push_back(UEinfo(i,j,BS_list[i].UE_list[j].UePosition,RBnum,RBnum*CQI_eff[BS_list[i].UE_list[j].CQI]*BW/N_band/1000000,RBnum*MCS_TBS_50mimo[BS_list[i].UE_list[j].MCS]/N_band/1000));
+        }
+    }
+    DATA.push_back(tmp);
+    tmp.clear();
 }
