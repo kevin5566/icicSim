@@ -243,7 +243,9 @@ void cmdGenerate(vector<baseStation> BS_list, vector< vector<string> > &cmd) {
 }
 
 int cmdComboGen(vector< vector<string> > cmd, vector<vector<int> > &cmdIdx){
+    // Based on carryout principle to generate combo //
     
+    // Each digit has diff carryout amount //
     vector<int> carryout;
     carryout.push_back(cmd[cmd.size()-1].size());
     for(int i=0;i<cmd.size()-2;i++)
@@ -593,5 +595,25 @@ void saveUEinfo(vector<baseStation> BS_list, vector< vector<UEinfo> > &DATA){
         }
     }
     DATA.push_back(tmp);
-    tmp.clear();
+}
+
+void showAllresult(vector< vector<UEinfo> > DATA){
+    for(int i=0;i<DATA.size();i++){
+        cout<<"///////////////////// Exp"<<setw(4)<<i
+            <<" result /////////////////////"<<endl;
+        for(int j=0;j<DATA[i].size();j++){
+            cout<<setw(6)<<"BS idx"<<"|"
+                <<setw(6)<<"UE idx"<<"|"
+                <<setw(9)<<"Position"<<"|"
+                <<setw(6)<<"RBnum"<<"|"
+                <<setw(13)<<"CQI Thrghput"<<"|"
+                <<setw(13)<<"MCS Thrghput"<<endl;
+            cout<<setw(6)<<DATA[i][j].BSidx<<"|"
+                <<setw(6)<<DATA[i][j].UEidx<<"|"
+                <<setw(9)<<DATA[i][j].UePosition<<"|"
+                <<setw(6)<<DATA[i][j].RBnum<<"|"
+                <<setw(13)<<DATA[i][j].CQI_thrghput<<"|"
+                <<setw(13)<<DATA[i][j].MCS_thrghput<<endl;
+        }
+    }
 }
