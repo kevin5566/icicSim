@@ -1,5 +1,8 @@
-# icicSim: gemtek testbed ICIC simulation
-@ Kevin Cheng a.k.a. kevin5566, NTUEE WMNLab 2017
+# icicSim: Gemtek testbed simulator for ICIC 
+@ Kevin Cheng a.k.a. kevin5566, NTUEE WMNLab 2017  
+  
+This simulator will show the theoratical UE\`s throughput by input ***base station information, UE information*** and ***power control cmd for BS***.  
+For optimization ICIC solution version, see our next project: [icicSimOpt](https://github.com/kevin5566/icicSimOpt/).  
 
 ## File Description
 1. `main.cpp`: Main program to call all simulation procedure.
