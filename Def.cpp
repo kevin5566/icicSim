@@ -1,7 +1,7 @@
 #include "Def.h"
 
 // Return strg value (i.e. Power-PathLoss, unit: dBm) //
-double getStrg(vector<baseStation> BS_list, int i, int j, int k, int l){
+double getStrg(vector<baseStation> BS_list, int i, int j, int k, int l, bool isRS){
     // i: BS idx
     // j: UE idx
     // k: Subband idx
@@ -411,7 +411,7 @@ void calcsubSINR(vector<baseStation> &BS_list){
                 i_tmp=pow(10,N_0*(BW/N_band)/10);   //noise
                 for(int l=0;l<BS_list.size();l++){
                     if(l==i)
-                        sinr_tmp=getStrg(BS_list,i,j,k,l);
+                        sinr_tmp=getStrg(BS_list,i,j,k,l,0); //414
                     else{
                         // RB used interference strg up //
                         if(BS_list[l].sub_alloc[k]==-1) // only RS
