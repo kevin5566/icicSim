@@ -15,7 +15,7 @@ double getStrg(vector<baseStation> BS_list, int i, int j, int k, int l, bool isR
     //}
     //result=result+S;
     result=-1*result;
-    result=result+isRS*BS_list[l].power+(~isRS)*BS_list[l].sub_P[k];
+    result=result+isRS*BS_list[l].power+(1-isRS)*BS_list[l].sub_P[k];
     return result;
 }
 
